@@ -1,0 +1,70 @@
+import { makeAnswer } from 'test/factories/make-answer';
+import { makeQuestion } from 'test/factories/make-question';
+import { InMemoryAnswerAttachmentsRepository } from 'test/repositories/in-memory-answer-attachments.repository';
+import { InMemoryAnswersRepository } from 'test/repositories/in-memory-answers-repository';
+import { InMemoryNotificationsRepository } from 'test/repositories/in-memory-notifications-repository';
+import { InMemoryQuestionAttachmentsRepository } from 'test/repositories/in-memory-question-attachments-repository';
+import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questions-repository';
+import { waitFor } from 'test/utils/wait-for';
+import { MockInstance } from 'vitest';
+import {
+  SendNotificationService,
+  SendNotificationServiceRequest,
+  SendNotificationServiceResponse,
+} from '../../services/send-notification.service';
+import { OnQuestionBestAnswerChosen } from '../on-question-best-answer-chosen';
+
+let inMemoryQuestionAttachmentsRepository: InMemoryQuestionAttachmentsRepository;
+let inMemoryQuestionsRepository: InMemoryQuestionsRepository;
+let inMemoryAnswerAttachmentsRepository: InMemoryAnswerAttachmentsRepository;
+let inMemoryAnswersRepository: InMemoryAnswersRepository;
+let inMemoryNotificationsRepository: InMemoryNotificationsRepository;
+let sendNotificationService: SendNotificationService;
+
+let sendNotificationExecuteSpy: MockInstance<
+  (
+    request: SendNotificationServiceRequest,
+  ) => Promise<SendNotificationServiceResponse>
+>;
+
+describe('On Question Best Answer Chosen', () => {
+  beforeEach(() => {
+    inMemoryQuestionAttachmentsRepository =
+      new InMemoryQuestionAttachmentsRepository();
+    inMemoryQuestionsRepository = new InMemoryQuestionsRepository(
+      inMemoryQuestionAttachmentsRepository,
+    );
+    inMemoryAnswerAttachmentsRepository =
+      new InMemoryAnswerAttachmentsRepository();
+    inMemoryAnswersRepository = new InMemoryAnswersRepository(
+      inMemoryAnswerAttachmentsRepository,
+    );
+    inMemoryNotificationsRepository = new InMemoryNotificationsRepository();
+    sendNotificationService = new SendNotificationService(
+      inMemoryNotificationsRepository,
+    );
+
+    sendNotificationExecuteSpy = vi.spyOn(sendNotificationService, 'execute');
+
+    new OnQuestionBestAnswerChosen(
+      inMemoryAnswersRepository,
+      sendNotificationService,
+    );
+  });
+
+  it('should send a notification when topic has new best answer chosen', async () => {
+    const question = makeQuestion();
+    const answer = makeAnswer({ questionId: question.id });
+
+    await inMemoryQuestionsRepository.create(question);
+    await inMemoryAnswersRepository.create(answer);
+
+    question.bestAnswerId = answer.id;
+
+    await inMemoryQuestionsRepository.save(question);
+
+    await waitFor(() => {
+      expect(sendNotificationExecuteSpy).toHaveBeenCalled();
+    });
+  });
+});
