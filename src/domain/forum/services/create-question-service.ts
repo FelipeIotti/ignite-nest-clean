@@ -1,5 +1,6 @@
 import { Either, right } from '@/core/entities/either';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
+import { Injectable } from '@nestjs/common';
 import { Question } from '../entities/question';
 import { QuestionAttachment } from '../entities/question-attachment';
 import { QuestionAttachmentList } from '../entities/question-attachment-list';
@@ -19,6 +20,7 @@ type CreateQuestionServiceResponse = Either<
   }
 >;
 
+@Injectable()
 export class CreateQuestionService {
   constructor(private questionsRepository: QuestionsRepository) {}
 
