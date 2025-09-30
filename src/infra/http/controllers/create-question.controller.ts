@@ -1,4 +1,4 @@
-import { CreateQuestionService } from '@/domain/forum/services/create-question-service';
+import { CreateQuestionService } from '@/domain/forum/services/create-question.service';
 import { CurrentUser } from '@/infra/auth/current-user-decorator';
 import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard';
 import { type UserPayload } from '@/infra/auth/jwt.strategy';

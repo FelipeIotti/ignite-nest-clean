@@ -1,4 +1,5 @@
 import { Either, right } from '@/core/entities/either';
+import { Injectable } from '@nestjs/common';
 import { Question } from '../entities/question';
 import { QuestionsRepository } from '../repositories/question.repository';
 
@@ -13,6 +14,7 @@ type FetchRecentQuestionsServiceResponse = Either<
   }
 >;
 
+@Injectable()
 export class FetchRecentQuestionsService {
   constructor(private questionsRepository: QuestionsRepository) {}
 
