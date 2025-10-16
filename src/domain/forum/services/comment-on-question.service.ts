@@ -1,6 +1,7 @@
 import { Either, left, right } from '@/core/entities/either';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error';
+import { Injectable } from '@nestjs/common';
 import { QuestionComment } from '../entities/question-comment';
 import { QuestionCommentsRepository } from '../repositories/question-comments.repository';
 import { QuestionsRepository } from '../repositories/question.repository';
@@ -18,6 +19,7 @@ type CommentOnQuestionServiceResponse = Either<
   }
 >;
 
+@Injectable()
 export class CommentOnQuestionService {
   constructor(
     private questionsRepository: QuestionsRepository,

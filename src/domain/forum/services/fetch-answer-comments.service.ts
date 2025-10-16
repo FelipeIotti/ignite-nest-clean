@@ -1,4 +1,5 @@
 import { Either, right } from '@/core/entities/either';
+import { Injectable } from '@nestjs/common';
 import { AnswerComment } from '../entities/answer-comment';
 import { AnswerCommentsRepository } from '../repositories/answer-comments.repository';
 
@@ -14,6 +15,7 @@ type FetchAnswerCommentsServiceResponse = Either<
   }
 >;
 
+@Injectable()
 export class FetchAnswerCommentsService {
   constructor(private answerCommentsRepository: AnswerCommentsRepository) {}
 

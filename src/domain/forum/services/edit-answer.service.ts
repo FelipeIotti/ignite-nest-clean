@@ -2,6 +2,7 @@ import { Either, left, right } from '@/core/entities/either';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error';
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error';
+import { Injectable } from '@nestjs/common';
 import { Answer } from '../entities/answer';
 import { AnswerAttachment } from '../entities/answer-attachment';
 import { AnswerAttachmentList } from '../entities/answer-attachment-list';
@@ -22,6 +23,7 @@ type EditAnswerServiceResponse = Either<
   }
 >;
 
+@Injectable()
 export class EditAnswerService {
   constructor(
     private answersRepository: AnswersRepository,
